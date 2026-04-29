@@ -10,25 +10,37 @@ COR_FUNDO = "#FDF5E6"
 COR_TEXTO = "#1A1A1A"     
 
 class DashboardGerente:
-    def __init__(self, root, username):
+    def __init__(self, root, username, avisado=False):
         self.root = root
         self.username = username
+        self.avisado_fechamento = avisado # Controle para o pop-up não repetir
+        
+        # --- CONFIGURAÇÃO DE JANELA E CENTRALIZAÇÃO ---
+        largura, altura = 1150, 800 
+        largura_tela = self.root.winfo_screenwidth()
+        altura_tela = self.root.winfo_screenheight()
+        pos_x = (largura_tela // 2) - (largura // 2)
+        pos_y = (altura_tela // 2) - (altura // 2)
         
         self.root.title("Cristal Hotel - Gestão Administrativa")
-        self.root.geometry("1100x750")
+        self.root.geometry(f"{largura}x{altura}+{pos_x}+{pos_y}")
         self.root.configure(bg=COR_FUNDO)
         
         self.main_frame = tk.Frame(self.root, bg=COR_FUNDO)
         self.main_frame.pack(fill="both", expand=True)
         
         self.criar_layout()
-        self.verificar_lembrete_fechamento()
+        
+        # Só dispara o aviso se for a primeira vez na sessão (Login)
+        if not self.avisado_fechamento:
+            self.verificar_lembrete_fechamento()
 
     def reconstruir_dashboard(self):
-        """Limpa a janela atual e reconstrói o Dashboard do zero"""
+        """Limpa a janela e reconstrói o Dashboard mantendo o estado do aviso"""
         for widget in self.root.winfo_children():
             widget.destroy()
-        self.__init__(self.root, self.username)
+        # Passamos avisado=True para que o pop-up não volte a aparecer ao clicar em 'Voltar'
+        self.__init__(self.root, self.username, avisado=True)
 
     def verificar_lembrete_fechamento(self):
         from datetime import datetime
@@ -38,17 +50,20 @@ class DashboardGerente:
         faltam = ultimo_dia - hoje.day
         
         if faltam in [0, 1, 2]:
-            dias_texto = {0: "HOJE é o último dia", 1: "Falta 1 dia", 2: "Faltam 2 dias"}
+            dias_texto = {0: "HOJE é o último dia", 1: "Faltam 1 dia", 2: "Faltam 2 dias"}
             msg = f"⚠️ LEMBRETE DE FECHAMENTO ⚠️\n\n{dias_texto[faltam]} para o fim do mês!\n\nPor favor, gere o Relatório Mensal e realize o Fechamento do Mês."
             messagebox.showwarning("Aviso de Fechamento", msg)
+            self.avisado_fechamento = True # Marca que já avisou nesta execução
 
     def criar_layout(self):
         header = tk.Frame(self.main_frame, bg=COR_VERMELHO, height=150)
         header.pack(fill="x")
         tk.Frame(header, bg=COR_AMARELO, height=5).pack(fill="x", side="bottom")
 
-        tk.Label(header, text="CRISTAL HOTEL", font=("Helvetica", 32, "bold"), bg=COR_VERMELHO, fg=COR_BRANCO).pack(pady=(25, 0))
-        tk.Label(header, text="SISTEMA DE GESTÃO DE PONTO E FINANCEIRO", font=("Helvetica", 10, "bold"), bg=COR_VERMELHO, fg=COR_AMARELO).pack(pady=(0, 20))
+        tk.Label(header, text="CRISTAL HOTEL", font=("Helvetica", 32, "bold"), 
+                 bg=COR_VERMELHO, fg=COR_BRANCO).pack(pady=(25, 0))
+        tk.Label(header, text="SISTEMA DE GESTÃO DE PONTO E FINANCEIRO", font=("Helvetica", 10, "bold"), 
+                 bg=COR_VERMELHO, fg=COR_AMARELO).pack(pady=(0, 20))
 
         btn_container = tk.Frame(self.main_frame, bg=COR_FUNDO)
         btn_container.pack(expand=True, pady=40)
@@ -220,12 +235,20 @@ class DashboardGerente:
 
 # --- DASHBOARD DO RECEPCIONISTA COMUM ---
 class DashboardComum:
-    def __init__(self, root, username):
+    def __init__(self, root, username, avisado=False):
         self.root = root
         self.username = username
-        self.root.title(f"Cristal Hotel - Operação Diária")
+        self.avisado_fechamento = avisado
         
-        self.root.geometry("1100x750")
+        # --- CONFIGURAÇÃO DE JANELA E CENTRALIZAÇÃO ---
+        largura, altura = 1150, 800
+        largura_tela = self.root.winfo_screenwidth()
+        altura_tela = self.root.winfo_screenheight()
+        pos_x = (largura_tela // 2) - (largura // 2)
+        pos_y = (altura_tela // 2) - (altura // 2)
+        
+        self.root.title(f"Crystal Hotel - Operação Diária")
+        self.root.geometry(f"{largura}x{altura}+{pos_x}+{pos_y}")
         self.root.configure(bg=COR_FUNDO)
 
         self.main_frame = tk.Frame(self.root, bg=COR_FUNDO)
@@ -237,7 +260,9 @@ class DashboardComum:
         self.criar_layout()
         self.atualizar_relogio()
         self.carregar_dados_dia()
-        self.verificar_lembrete_fechamento()
+        
+        if not self.avisado_fechamento:
+            self.verificar_lembrete_fechamento()
 
     def verificar_lembrete_fechamento(self):
         from datetime import datetime
@@ -249,6 +274,7 @@ class DashboardComum:
             dias_texto = {0: "HOJE é o último dia", 1: "Falta 1 dia", 2: "Faltam 2 dias"}
             msg = f"⚠️ LEMBRETE DE FECHAMENTO ⚠️\n\n{dias_texto[faltam]} para o fim do mês!\n\nPor favor, informe ao Gerente para realizar o Fechamento."
             messagebox.showwarning("Aviso", msg)
+            self.avisado_fechamento = True
 
     def carregar_funcionarios_memoria(self):
         try:
