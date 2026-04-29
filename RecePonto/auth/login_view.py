@@ -29,11 +29,9 @@ class TelaLogin:
         self.criar_widgets()
 
     def criar_widgets(self):
-        # Header / Logo
         header = tk.Frame(self.root, bg=COR_VERMELHO, height=180)
         header.pack(fill="x")
         
-        # Faixa amarela
         tk.Frame(header, bg=COR_AMARELO, height=5).pack(fill="x", side="bottom")
         
         tk.Label(header, text="CRISTAL HOTEL", font=("Helvetica", 28, "bold"), 
@@ -41,7 +39,6 @@ class TelaLogin:
         tk.Label(header, text="GESTÃO DE PONTO PROFISSIONAL", font=("Helvetica", 9, "bold"), 
                  bg=COR_VERMELHO, fg=COR_AMARELO).pack()
 
-        # Frame de Login
         login_frame = tk.Frame(self.root, bg=COR_FUNDO, pady=40)
         login_frame.pack(fill="both", expand=True, padx=50)
 
@@ -67,7 +64,6 @@ class TelaLogin:
                  font=("Helvetica", 7), bg=COR_FUNDO, fg="#888").pack(side="bottom", pady=15)
 
     def fazer_login(self):
-        # Pegamos os dados digitados
         usuario = self.ent_user.get()
         senha = self.ent_pass.get()
         
@@ -75,7 +71,6 @@ class TelaLogin:
             messagebox.showwarning("Atenção", "Preencha todos os campos!")
             return
 
-        # Usamos o controller para verificar o login
         nivel = verificar_login(usuario, senha)
 
         if nivel:
@@ -84,14 +79,11 @@ class TelaLogin:
             messagebox.showerror("Erro", "Usuário ou senha inválidos!")
 
     def abrir_dashboard(self, nivel_acesso):
-        # Pegamos o nome do usuário ANTES de destruir os widgets
         usuario_logado = self.ent_user.get()
         
-        # Limpa COMPLETAMENTE a janela root para receber o novo layout
         for widget in self.root.winfo_children():
             widget.destroy()
         
-        # Criamos a nova tela no mesmo root
         try:
             print(f"DEBUG: Transicionando para Dashboard ({nivel_acesso})")
             if nivel_acesso == "Gerente":

@@ -97,7 +97,6 @@ class TelaRegistroPonto:
 
     def atualizar_relogio(self):
         try:
-            # SE A JANELA FOI DESTRUÍDA (porque o usuário clicou em Voltar), encerra o relógio!
             if not hasattr(self, 'lbl_relogio') or not self.lbl_relogio.winfo_exists():
                 return
             

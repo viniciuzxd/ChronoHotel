@@ -112,7 +112,6 @@ class ReciboCompacto(FPDF):
             self.line(5, offset_y + 96, 205, offset_y + 96)
             self.set_dash_pattern()
 
-    # >>> A FUNÇÃO QUE FALTAVA FOI DEVOLVIDA AQUI <<<
     def salvar(self, nome_arquivo):
         self.output(nome_arquivo)
 

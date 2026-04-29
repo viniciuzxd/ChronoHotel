@@ -67,13 +67,11 @@ class TelaGerenciarRecepcionistas:
         self.cb_nivel.set("Comum")
         self.cb_nivel.pack(pady=8)
 
-        # Botão Salvar
         tk.Button(container, text="CADASTRAR ACESSO", bg=COR_VERMELHO, fg=COR_BRANCO, 
                   font=("Helvetica", 10, "bold"), width=30, height=2, relief="flat", cursor="hand2",
                   command=self.salvar_usuario).pack(pady=30)
 
     def criar_widgets_lista(self):
-        # Estilo da Tabela
         style = ttk.Style()
         style.configure("Treeview", background=COR_BRANCO, fieldbackground=COR_BRANCO, 
                         rowheight=35, font=("Helvetica", 10))
@@ -91,7 +89,6 @@ class TelaGerenciarRecepcionistas:
         
         self.tabela.pack(fill="both", expand=True, padx=20, pady=20)
         
-        # Botão Remover
         tk.Button(self.frame_lista, text="🗑️ REMOVER ACESSO SELECIONADO", bg="#CC0000", fg=COR_BRANCO, 
                   font=("Helvetica", 9, "bold"), width=35, height=2, relief="flat", cursor="hand2",
                   command=self.excluir).pack(pady=(0, 20))

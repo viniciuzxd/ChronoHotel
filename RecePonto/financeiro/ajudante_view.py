@@ -21,7 +21,6 @@ class TelaAjudante:
         self.carregar_dados()
 
     def criar_widgets(self):
-        # HEADER
         header = tk.Frame(self.root, bg=COR_VERMELHO, pady=15)
         header.pack(fill="x")
         tk.Frame(header, bg=COR_AMARELO, height=3).pack(fill="x", side="bottom")
@@ -35,7 +34,6 @@ class TelaAjudante:
         tk.Label(header, text="CRISTAL HOTEL", font=("Helvetica", 20, "bold"), bg=COR_VERMELHO, fg=COR_BRANCO).pack()
         tk.Label(header, text="CONTROLE DE AJUDANTES / DIARISTAS", font=("Helvetica", 9, "bold"), bg=COR_VERMELHO, fg=COR_AMARELO).pack()
 
-        # --- CADASTRO RÁPIDO (1 CLIQUE) ---
         frame_cad = tk.Frame(self.root, bg=COR_BRANCO, pady=15, padx=20)
         frame_cad.pack(fill="x", padx=30, pady=15)
         
@@ -56,7 +54,6 @@ class TelaAjudante:
         tk.Button(form_linha, text="➕ REGISTRAR DIÁRIA", bg=COR_VERMELHO, fg=COR_BRANCO, font=("Helvetica", 10, "bold"), 
                   cursor="hand2", relief="flat", command=self.salvar_diaria).pack(side="left", padx=10, ipady=3, ipadx=10)
 
-        # --- FILTROS E GERAÇÃO DE RECIBO QUINZENAL ---
         frame_filtro = tk.Frame(self.root, bg=COR_FUNDO)
         frame_filtro.pack(fill="x", padx=30, pady=5)
 
@@ -77,10 +74,8 @@ class TelaAjudante:
 
         tk.Button(frame_filtro, text="🔍 FILTRAR TABELA", bg=COR_AMARELO, fg=COR_VERMELHO, font=("Helvetica", 9, "bold"), cursor="hand2", relief="flat", command=self.carregar_dados).pack(side="left", padx=15)
         
-        # O Botão de gerar a folha diretamente pela tela
         tk.Button(frame_filtro, text="📄 GERAR RECIBO QUINZENAL (PDF)", bg="#107C10", fg=COR_BRANCO, font=("Helvetica", 10, "bold"), cursor="hand2", relief="flat", command=self.gerar_recibo).pack(side="right")
 
-        # --- TABELA E TOTAIS ---
         style = ttk.Style()
         style.configure("Treeview.Heading", font=("Helvetica", 10, "bold"), background=COR_VERMELHO, foreground=COR_BRANCO)
         
@@ -122,7 +117,6 @@ class TelaAjudante:
             messagebox.showerror("Erro", "O valor deve ser um número válido (ex: 60.00)!")
             return
 
-        # Puxa o dia atual e define a jornada como 8h (08:00 as 16:00) automaticamente
         agora = datetime.now()
         data_str = agora.strftime("%d/%m/%Y")
         entrada = "08:00"
@@ -136,7 +130,6 @@ class TelaAjudante:
             conn.commit()
             conn.close()
             
-            # Nota: O nome não apaga do campo para facilitar se for cadastrar ele no dia seguinte!
             messagebox.showinfo("Sucesso", f"Diária de {nome} registrada com sucesso hoje ({data_str})!")
             self.carregar_dados()
         except Exception as e:
@@ -165,7 +158,6 @@ class TelaAjudante:
             for row in registros:
                 r_data = row[2]
                 try:
-                    # Sistema tenta entender datas gravadas em formatos antigos e novos
                     if "-" in r_data:
                         dt_reg = datetime.strptime(r_data, "%Y-%m-%d")
                     else:
@@ -173,7 +165,6 @@ class TelaAjudante:
                 except Exception:
                     continue 
                 
-                # Se estiver dentro do filtro (Mês e Quinzena selecionados), ele joga na tela
                 if dt_inicio <= dt_reg <= dt_fim:
                     data_exibicao = dt_reg.strftime("%d/%m/%Y")
                     self.tabela.insert("", "end", values=(row[0], row[1], data_exibicao, row[3], row[4], f"R$ {row[5]:.2f}"))
@@ -203,7 +194,6 @@ class TelaAjudante:
             messagebox.showwarning("Aviso", "A tabela está vazia. Filtre um período que possua diárias!")
             return
         
-        # Agrupa os ajudantes que estão na tela para somar seus ganhos
         agrupado = {}
         for item in itens:
             v = self.tabela.item(item, "values")
@@ -224,7 +214,6 @@ class TelaAjudante:
             data_i_br = datetime.strptime(data_i, "%Y-%m-%d").strftime("%d/%m/%Y")
             data_f_br = datetime.strptime(data_f, "%Y-%m-%d").strftime("%d/%m/%Y")
 
-            # Aproveita o layout profissional do PDF já criado!
             from financeiro.recibo_pdf import ReciboCompacto
             gerador = ReciboCompacto()
             contador = 0
@@ -253,7 +242,6 @@ class TelaAjudante:
             nome_arquivo = os.path.join(pasta_recibos, f"Recibo_Ajudantes_{mes}_{ano}_{periodo}.pdf")
             gerador.salvar(nome_arquivo)
 
-            # Abre o PDF gerado automaticamente
             import subprocess, sys
             abspath = os.path.abspath(nome_arquivo)
             if os.name == 'nt':

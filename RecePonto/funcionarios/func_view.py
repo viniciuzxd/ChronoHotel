@@ -17,7 +17,6 @@ class TelaCadastroFuncionarios:
         self.root.title("Cristal Hotel - Gestão de Equipe")
         self.root.configure(bg=COR_FUNDO)
         
-        # Header Moderno
         header = tk.Frame(self.root, bg=COR_VERMELHO, pady=15)
         header.pack(fill="x")
         
@@ -122,7 +121,7 @@ class TelaCadastroFuncionarios:
         conn = conectar()
         cursor = conn.cursor()
         
-        # Ordem hierárquica solicitada
+        # Ordem hierárquica 
         ordem_cargos = {
             "Gerente": 1,
             "Recepcionista Comum": 2,

@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import calendar
 from database.conexao import conectar
 
-# 1. Tabela Base de Valores
 VALORES_POR_CARGO = {
     "Cozinha": 7.50,
     "Cozinheiro": 7.50,
@@ -28,7 +27,6 @@ def calcular_horas_decimais(hora_entrada, hora_saida, cargo=""):
         t1 = datetime.strptime(hora_entrada, formato)
         t2 = datetime.strptime(hora_saida, formato)
         
-        # Se a saída for menor que a entrada (ex: 22:00 às 06:00), virou a madrugada (adiciona 1 dia)
         if t2 < t1:
             t2 += timedelta(days=1)
             
